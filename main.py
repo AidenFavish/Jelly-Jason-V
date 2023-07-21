@@ -2,6 +2,7 @@ from time import sleep
 import random
 import discord
 import json
+import channels
 from secrets import tokenD
 
 intents = discord.Intents.default()
@@ -109,11 +110,49 @@ async def on_raw_reaction_add(payload):
                 else:
                     await admin.send("Reaction not found")
                 break
+    elif channels.GENERAL_PG == payload.channel_id and payload.emoji.name == "❌":
+        with open("storage.json", "r") as j:
+            data = json.load(j)
+
+        for i in range(0, len(data["PG"])):
+            if data["PG"][i][0] == payload.message_id:
+                if data["PG"][i][1] < 2:
+                    data["PG"][i][1] += 1
+                else:
+                    del data["PG"][i]
+                    bad_msg = await client.get_channel(payload.channel_id).fetch_message(payload.message_id)
+                    await bad_msg.delete()
+
+                with open("storage.json", "w") as j:
+                    json.dump(data, j)
+
+                return
+
+        data["PG"].append([payload.message_id, 1])
+
+        with open("storage.json", "w") as j:
+            json.dump(data, j)
+
 
     print(payload)
 
 @client.event
 async def on_raw_reaction_remove(payload):
+    if channels.GENERAL_PG == payload.channel_id and payload.emoji.name == "❌":
+        with open("storage.json", "r") as j:
+            data = json.load(j)
+
+        for i in range(0, len(data["PG"])):
+            if data["PG"][i][0] == payload.message_id:
+                data["PG"][i][1] -= 1
+
+                if data["PG"][i][1] <= 0:
+                    del data["PG"][i]
+
+                break
+
+        with open("storage.json", "w") as j:
+            json.dump(data, j)
     print("reaction remove detected")
 
 
