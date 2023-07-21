@@ -47,6 +47,24 @@ async def on_ready():
     # Todo update last bot refresh time to control pannel
 
 
+@client.event
+async def on_member_join(member):
+    rock_role = client.get_guild(SERVER_ID).get_role(947983184409272340)
+    await member.add_roles(rock_role)
+
+    with open("storage.json", "r") as j:
+        data = json.load(j)
+
+    choose_msg = await member.send("Would you like\nPG and up channels 🔵\nOr\nPG and under channels 🟢")
+    data["ChoosePG"].append(choose_msg.id)
+    await choose_msg.add_reaction("🔵")
+    await choose_msg.add_reaction("🟢")
+
+    with open("storage.json", "w") as j:
+        json.dump(data, j)
+
+
+
 @tree.command(description='Apply to host an event')
 async def event(interaction: discord.Interaction, event_name: str, day: int, month: int, year: int, location: str,
                 description: str, link: str):
@@ -58,9 +76,8 @@ async def event(interaction: discord.Interaction, event_name: str, day: int, mon
     await interaction.response.send_message("Your application has been submitted\n\n" + output)
     admin = client.get_user(ADMIN_ID)
     admin_msg = await admin.send("Application waiting for approval:\n\n" + output)
-    dms = await client.get_channel(admin_msg.channel.id).fetch_message(admin_msg.id)
-    await dms.add_reaction("🟢")
-    await dms.add_reaction("🔴")
+    await admin_msg.add_reaction("🟢")
+    await admin_msg.add_reaction("🔴")
 
     with open("storage.json", "r") as j:
         data = json.load(j)
@@ -90,9 +107,10 @@ async def sync(interaction: discord.Interaction):
 
 @client.event
 async def on_raw_reaction_add(payload):
+    with open("storage.json", "r") as j:
+        data = json.load(j)
+
     if payload.channel_id == ADMIN_DMS:
-        with open("storage.json", "r") as j:
-            data = json.load(j)
         for i in range(0, len(data["EventApplications"])):
             if payload.message_id == data["EventApplications"][i]:
                 admin = client.get_user(ADMIN_ID)
@@ -111,9 +129,6 @@ async def on_raw_reaction_add(payload):
                     await admin.send("Reaction not found")
                 break
     elif channels.GENERAL_PG == payload.channel_id and payload.emoji.name == "❌":
-        with open("storage.json", "r") as j:
-            data = json.load(j)
-
         for i in range(0, len(data["PG"])):
             if data["PG"][i][0] == payload.message_id:
                 if data["PG"][i][1] < 2:
@@ -132,6 +147,25 @@ async def on_raw_reaction_add(payload):
 
         with open("storage.json", "w") as j:
             json.dump(data, j)
+    elif payload.message_id in data["ChoosePG"]:
+        for i in range(0, len(data["ChoosePG"])):
+            if payload.message_id == data["ChoosePG"][i]:
+                if payload.emoji.name == "🔵":
+                    pg_plus_role = client.get_guild(SERVER_ID).get_role(1128726932561854585)
+                    member = client.get_guild(SERVER_ID).get_member(payload.user_id)
+                    await member.add_roles(pg_plus_role)
+                    del data["ChoosePG"][i]
+                    with open("storage.json", "w") as j:
+                        json.dump(data, j)
+                elif payload.emoji.name == "🟢":
+                    pg_role = client.get_guild(SERVER_ID).get_role(1128725136820932608)
+                    member = client.get_guild(SERVER_ID).get_member(payload.user_id)
+                    await member.add_roles(pg_role)
+                    del data["ChoosePG"][i]
+                    with open("storage.json", "w") as j:
+                        json.dump(data, j)
+                else:
+                    print("Reaction not found for ChangePG")
 
 
     print(payload)
