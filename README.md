@@ -2,7 +2,8 @@
 
 ### The Unkillable Server's very own moderation bot
 
-#### 🔴 = Not Active _________ 🟢 = Active
+#### 🔴 = Not Active 
+#### 🟢 = Active
 
 ## Commands:
 
