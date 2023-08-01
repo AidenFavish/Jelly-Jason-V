@@ -4,6 +4,9 @@ import discord
 import json
 import channels
 from secrets import tokenD
+import datetime
+import time
+import asyncio
 
 intents = discord.Intents.default()
 intents.members = True
@@ -15,6 +18,7 @@ servers_synced = {}
 SERVER_ID = 895359434539302953
 ADMIN_ID = 779481064636809246
 ADMIN_DMS = 948329194050445372
+ROCK = 947983184409272340
 
 
 class aclient(discord.Client):
@@ -26,6 +30,54 @@ class aclient(discord.Client):
 
 client = aclient()
 tree = discord.app_commands.CommandTree(client)
+
+
+async def daily_check(force: bool = False):
+    with open("storage.json", "r") as j:
+        data = json.load(j)
+    print(time.time() / 86400 + 0.5, flush=True)  # +0.75 is to offset utc time
+    print((datetime.date(day=30, month=7, year=2023) - datetime.date.today()).days)
+    if data["Date"] != int(time.time() / 86400 + 0.75) or force:
+        print("Daily check triggered")
+        data["Date"] = int(time.time() / 86400 + 0.75)
+        with open("storage.json", "w") as j:
+            json.dump(data, j)
+
+        # one a day code here
+        temp_events = []
+        for key, value in data["EventApplications"].items():
+            days_until = (datetime.date(day=value[1], month=value[2], year=value[3]) - datetime.date.today()).days
+            if days_until < 0:
+                try:
+                    archives = client.get_channel(channels.ARCHIVES_CAT)
+                    event_channel = client.get_channel(value[9])
+                    await event_channel.send("---------- THIS CHANNEL HAS BEEN ARCHIVED ----------")
+                    await event_channel.move(category=archives, beginning=True)
+                    guild = client.get_guild(SERVER_ID)
+                    await event_channel.set_permissions(guild.get_role(ROCK), view_channel=True)
+                    event_role = guild.get_role(value[8])
+                    await event_role.delete()
+                except Exception as e:
+                    print(str(e) + "\nwas thrown when trying to archive an event")
+
+                temp_events.append(key)
+                temp = []
+                for key2, value2 in data["EventInvites"].items():
+                    if value2 == key:
+                        temp.append(key2)
+
+                for i in temp:
+                    data["EventInvites"].pop(i)
+
+        for i in temp_events:
+            data["EventApplications"].pop(i)
+        with open("storage.json", "w") as j:
+            json.dump(data, j)
+
+
+    # repeater
+    await asyncio.sleep(5)
+    await daily_check()
 
 
 @client.event
@@ -43,6 +95,8 @@ async def on_ready():
 
     async for i in client.fetch_guilds():
         servers_synced[i.id] = False
+
+    await daily_check(force=True)
 
     # Todo update last bot refresh time to control pannel
 
@@ -64,24 +118,29 @@ async def on_member_join(member):
         json.dump(data, j)
 
 
-
 @tree.command(description='Apply to host an event')
 async def event(interaction: discord.Interaction, event_name: str, day: int, month: int, year: int, location: str,
-                description: str, link: str):
+                description: str, link: str = "None"):
     output = "```SUMMARY:\nEvent name: " + event_name
     output += "\nDate: " + str(month) + "/" + str(day) + "/" + str(year)
     output += "\nLocation: " + location
     output += "\nDescription: " + description
     output += "\nLink: " + link + "```"
-    await interaction.response.send_message("Your application has been submitted\n\n" + output)
     admin = client.get_user(ADMIN_ID)
+    try:
+        await interaction.response.send_message("Your application has been submitted")
+    except Exception as e:
+        print(e)
+        await admin.send(str(e) + "\ngenerated with event creation")
+
     admin_msg = await admin.send("Application waiting for approval:\n\n" + output)
     await admin_msg.add_reaction("🟢")
     await admin_msg.add_reaction("🔴")
 
     with open("storage.json", "r") as j:
         data = json.load(j)
-    data["EventApplications"].append(admin_msg.id)
+    data["EventApplications"][str(admin_msg.id)] = [event_name, day, month, year, location, description, link,
+                                                    interaction.user.id]
     with open("storage.json", "w") as j:
         json.dump(data, j)
 
@@ -110,24 +169,53 @@ async def on_raw_reaction_add(payload):
     with open("storage.json", "r") as j:
         data = json.load(j)
 
-    if payload.channel_id == ADMIN_DMS:
-        for i in range(0, len(data["EventApplications"])):
-            if payload.message_id == data["EventApplications"][i]:
-                admin = client.get_user(ADMIN_ID)
-                if payload.emoji.name == "🟢":
-                    await admin.send("Approved event")
-                    del data["EventApplications"][i]
-                    with open("storage.json", "w") as j:
-                        json.dump(data, j)
-                    # TODO Approved
-                elif payload.emoji.name == "🔴":
-                    await admin.send("Denied event")
-                    del data["EventApplications"][i]
-                    with open("storage.json", "w") as j:
-                        json.dump(data, j)
-                else:
-                    await admin.send("Reaction not found")
-                break
+    if payload.channel_id == ADMIN_DMS and (payload.emoji.name == "🟢" or payload.emoji.name == "🔴") and str(
+            payload.message_id) in data["EventApplications"] and payload.user_id == ADMIN_ID:
+        admin = client.get_user(ADMIN_ID)
+        if payload.emoji.name == "🟢":
+            await admin.send("Approved event1")
+
+            # TODO Approved
+            guild = client.get_guild(SERVER_ID)
+            admin_dms = client.get_channel(ADMIN_DMS)
+            output = "# Event Invite\n" + (await admin_dms.fetch_message(payload.message_id)).content[
+                                          len("Application waiting for approval:\n\n"):]
+            output += "\nplease react 👍 to gain access to the event channel!"
+            generalCh = client.get_channel(channels.GENERAL)
+            generalPgCh = client.get_channel(channels.GENERAL_PG)
+            invite1 = await admin_dms.send("🟢\n" + output)
+            invite2 = await admin_dms.send("🔵\n" + output)
+
+            await invite1.add_reaction("👍")
+            await invite2.add_reaction("👍")
+
+            event_data = data["EventApplications"][str(payload.message_id)]
+
+            # create role
+            role_id = await guild.create_role(name=event_data[0], color=0xF1C40F)
+
+            # create channel
+            event_channel = await client.get_channel(channels.EVENTS_CAT).create_text_channel(name=event_data[0])
+            await event_channel.set_permissions(role_id, view_channel=True)
+            await event_channel.set_permissions(guild.get_role(ROCK), view_channel=False)
+            event_author = guild.get_member(event_data[7])
+            await event_author.add_roles(role_id)
+
+            data["EventInvites"][str(invite1.id)] = str(payload.message_id)
+            data["EventInvites"][str(invite2.id)] = str(payload.message_id)
+            data["EventApplications"][str(payload.message_id)].append(role_id.id)
+            data["EventApplications"][str(payload.message_id)].append(event_channel.id)
+            with open("storage.json", "w") as j:
+                json.dump(data, j)
+
+        elif payload.emoji.name == "🔴":
+            await admin.send("Denied event")
+            data["EventApplications"].pop(str(payload.message_id))
+            with open("storage.json", "w") as j:
+                json.dump(data, j)
+        else:
+            await admin.send("Reaction not found")
+
     elif channels.GENERAL_PG == payload.channel_id and payload.emoji.name == "❌":
         for i in range(0, len(data["PG"])):
             if data["PG"][i][0] == payload.message_id:
@@ -166,9 +254,24 @@ async def on_raw_reaction_add(payload):
                         json.dump(data, j)
                 else:
                     print("Reaction not found for ChangePG")
+    elif str(payload.message_id) in data["EventInvites"] and payload.emoji.name == "👍":
 
+        try:
+            event_role = data["EventApplications"][data["EventInvites"][str(payload.message_id)]][8]
+            event_channel = data["EventApplications"][data["EventInvites"][str(payload.message_id)]][9]
+            role = client.get_guild(SERVER_ID).get_role(event_role)
+            member = client.get_guild(SERVER_ID).get_member(payload.user_id)
+            await member.add_roles(role)
+            await client.get_channel(event_channel).send(member.name + " has joined the event")
+        except Exception as e:
+            await client.get_channel(payload.channel_id).send(str(e))
+            await client.get_channel(payload.channel_id).send("Error thrown with invalid event invite")
+
+    else:
+        print("just reaction")
 
     print(payload)
+
 
 @client.event
 async def on_raw_reaction_remove(payload):
