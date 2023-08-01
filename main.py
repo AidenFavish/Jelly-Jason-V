@@ -74,6 +74,7 @@ async def daily_check(force: bool = False):
             data["EventApplications"].pop(i)
         with open("storage.json", "w") as j:
             json.dump(data, j)
+        await client.get_channel(channels.TESTING).send("Rebooting...")
         os.system('reboot')
 
     # repeater
@@ -97,7 +98,7 @@ async def on_ready():
     async for i in client.fetch_guilds():
         servers_synced[i.id] = False
 
-    #await daily_check()
+    await daily_check()
 
     # Todo update last bot refresh time to control pannel
 
@@ -322,9 +323,6 @@ async def on_raw_reaction_remove(payload):
 async def on_message(message):
     # Syncs to server
     print()
-    if message.content == "force":
-        await message.channel.send("forced")
-        await daily_check(force=True)
 
 
 client.run(tokenD)
