@@ -7,6 +7,7 @@ from secrets import tokenD
 import datetime
 import time
 import asyncio
+import os
 
 intents = discord.Intents.default()
 intents.members = True
@@ -73,6 +74,7 @@ async def daily_check(force: bool = False):
             data["EventApplications"].pop(i)
         with open("storage.json", "w") as j:
             json.dump(data, j)
+        os.system('reboot')
 
     # repeater
     await asyncio.sleep(30)
@@ -95,7 +97,7 @@ async def on_ready():
     async for i in client.fetch_guilds():
         servers_synced[i.id] = False
 
-    await daily_check(force=True)
+    #await daily_check()
 
     # Todo update last bot refresh time to control pannel
 
@@ -320,6 +322,9 @@ async def on_raw_reaction_remove(payload):
 async def on_message(message):
     # Syncs to server
     print()
+    if message.content == "force":
+        await message.channel.send("forced")
+        await daily_check(force=True)
 
 
 client.run(tokenD)
