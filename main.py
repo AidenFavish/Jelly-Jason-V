@@ -74,9 +74,8 @@ async def daily_check(force: bool = False):
         with open("storage.json", "w") as j:
             json.dump(data, j)
 
-
     # repeater
-    await asyncio.sleep(5)
+    await asyncio.sleep(30)
     await daily_check()
 
 
@@ -118,7 +117,7 @@ async def on_member_join(member):
         json.dump(data, j)
 
 
-@tree.command(description='Apply to host an event')
+@tree.command(description='Create an event with its own channel and its own members. *Will auto-archive after date')
 async def event(interaction: discord.Interaction, event_name: str, day: int, month: int, year: int, location: str,
                 description: str, link: str = "None"):
     output = "```SUMMARY:\nEvent name: " + event_name
@@ -147,7 +146,31 @@ async def event(interaction: discord.Interaction, event_name: str, day: int, mon
 
 @tree.command(description='When done in a designated event channel invites member personally')
 async def event_invite(interaction: discord.Interaction, member: discord.Member):
-    await interaction.response.send_message(member.name)
+    with open("storage.json", "r") as j:
+        data = json.load(j)
+
+    success = False
+
+    for key, value in data["EventApplications"].items():
+        if len(value) >= 10 and value[9] == interaction.channel_id:
+            invite_msg = await member.send(
+                "# Your invited to: " + value[0] + "\nIt will take place: " + str(value[2]) + ", " + str(
+                    value[1]) + ", " + str(value[3]) + "\nLocation: " + value[4] + "\nDescription: " + value[
+                    5] + "\nLink: " + value[6] + "\n\nReact with a 👍 to join!")
+            await invite_msg.add_reaction("👍")
+            data["EventInvites"][str(invite_msg.id)] = key
+            with open("storage.json", "w") as j:
+                json.dump(data, j)
+            success = True
+
+    try:
+        if success:
+            await interaction.response.send_message("member invited")
+        else:
+            await interaction.response.send_message(
+                "Something went wrong. Make sure you are using this command in a designated event channel.")
+    except Exception as e:
+        print(str(e) + "\nerror thrown while doing specific invite")
 
 
 @tree.command(name='sync', description='Owner only')
@@ -183,8 +206,8 @@ async def on_raw_reaction_add(payload):
             output += "\nplease react 👍 to gain access to the event channel!"
             generalCh = client.get_channel(channels.GENERAL)
             generalPgCh = client.get_channel(channels.GENERAL_PG)
-            invite1 = await admin_dms.send("🟢\n" + output)
-            invite2 = await admin_dms.send("🔵\n" + output)
+            invite1 = await generalCh.send("🟢\n" + output)
+            invite2 = await generalPgCh.send("🔵\n" + output)
 
             await invite1.add_reaction("👍")
             await invite2.add_reaction("👍")
