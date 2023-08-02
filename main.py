@@ -180,10 +180,8 @@ async def leave_event(interaction: discord.Interaction):
         event_role = data["EventApplications"][data["EventInvites"][event_key]][8]
         role = client.get_guild(SERVER_ID).get_role(event_role)
         member = client.get_guild(SERVER_ID).get_member(interaction.user.id)
-        if role in member.roles:
-            await client.get_user(ADMIN_ID).send("bruh")
-            await member.remove_roles(role)
-            await interaction.channel.send(member.nick + " has left the event")
+        await member.remove_roles(role)
+        await interaction.channel.send(member.nick + " has left the event")
     except Exception as e:
         await client.get_channel(interaction.channel.id).send(str(e))
         await client.get_channel(interaction.channel.id).send("Error thrown when trying to leave event")
