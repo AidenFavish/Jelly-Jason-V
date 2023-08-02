@@ -167,16 +167,16 @@ async def leave_event(interaction: discord.Interaction):
 
     if event_key == "None":
         await client.get_channel(ADMIN_DMS).send("Something went wrong when leaving an event")
+        await interaction.response.send_message("Something went wrong, make sure your in a designated event channel")
         return
 
     try:
         event_role = data["EventApplications"][data["EventInvites"][event_key]][8]
-        event_channel = data["EventApplications"][data["EventInvites"][event_key]][9]
         role = client.get_guild(SERVER_ID).get_role(event_role)
         member = client.get_guild(SERVER_ID).get_member(interaction.user.id)
         if role in member.roles:
             await member.remove_roles(role)
-            await client.get_channel(event_channel).send(member.name + " has left the event")
+            await interaction.channel.send(member.name + " has left the event")
     except Exception as e:
         await client.get_channel(interaction.channel.id).send(str(e))
         await client.get_channel(interaction.channel.id).send("Error thrown when trying to leave event")
@@ -228,7 +228,7 @@ async def change_date(interaction: discord.Interaction, day: int, month: int, ye
 
             await client.get_channel(channels.GENERAL).send(
                 "# Notice\nThe event ``" + value[0] + "`` has had its date change to ``"
-                + str(datetime.date(day=day, month=month, year=year).strftime('%A, %B %d, %Y')) + "`")
+                + str(datetime.date(day=day, month=month, year=year).strftime('%A, %B %d, %Y')) + "``")
 
             success = True
 
