@@ -34,16 +34,8 @@ client = aclient()
 tree = discord.app_commands.CommandTree(client)
 
 
-@tree.command(name='daily_check', description='Owner only')
-async def daily_check(interaction: discord.Interaction, force: bool = False):
-    try:
-        if interaction.user.id != ADMIN_ID:
-            await interaction.response.send_message("You must be the owner to use this command")
-            return
-        else:
-            await interaction.response.send_message("Attempting to do a daily check...")
-    except Exception as e:
-        await client.get_channel(ADMIN_DMS).send("Something went wrong with a daily check")
+
+async def daily_check(force: bool = False):
 
     with open("storage.json", "r") as j:
         data = json.load(j)
@@ -255,13 +247,13 @@ async def restart(interaction: discord.Interaction):
     try:
         if interaction.user.id == ADMIN_ID:
             await interaction.response.send_message('Restarting...')
+            os.system('git pull')
+            await asyncio.sleep(5)
+            os.system('reboot')
         else:
             await interaction.response.send_message('You need to be the admin to use this command')
     except Exception as e:
         await client.get_user(ADMIN_ID).send(str(e) + "\nError thrown when trying to restart")
-    await asyncio.sleep(2)
-    if interaction.user.id == ADMIN_ID:
-        os.system('reboot')
 
 
 @tree.command(name='power_off', description='Owner only')
