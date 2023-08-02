@@ -156,6 +156,7 @@ async def event(interaction: discord.Interaction, event_name: str, day: int, mon
 async def leave_event(interaction: discord.Interaction):
     with open("storage.json", "r") as j:
         data = json.load(j)
+
     event_key = "None"
     for key, value in data["EventApplications"].items():
         if len(value) >= 10 and value[9] == interaction.channel_id:
@@ -170,11 +171,9 @@ async def leave_event(interaction: discord.Interaction):
         return
 
     try:
-        await client.get_user(ADMIN_ID).send("bruh2")
-        event_role = data["EventApplications"][data["EventInvites"][event_key]][8]
+        event_role = data["EventApplications"][event_key][8]
         role = client.get_guild(SERVER_ID).get_role(event_role)
         member = client.get_guild(SERVER_ID).get_member(interaction.user.id)
-        await client.get_user(ADMIN_ID).send("bruh")
         await member.remove_roles(role)
         await interaction.channel.send(member.nick + " has left the event")
     except Exception as e:
