@@ -182,7 +182,7 @@ async def leave_event(interaction: discord.Interaction):
         member = client.get_guild(SERVER_ID).get_member(interaction.user.id)
         if role in member.roles:
             await member.remove_roles(role)
-            await interaction.channel.send(member.name + " has left the event")
+            await interaction.channel.send(member.nick + " has left the event")
     except Exception as e:
         await client.get_channel(interaction.channel.id).send(str(e))
         await client.get_channel(interaction.channel.id).send("Error thrown when trying to leave event")
@@ -300,7 +300,7 @@ async def on_raw_reaction_add(payload):
             payload.message_id) in data["EventApplications"] and payload.user_id == ADMIN_ID:
         admin = client.get_user(ADMIN_ID)
         if payload.emoji.name == "🟢":
-            await admin.send("Approved event1")
+            await admin.send("Approved event")
 
             # TODO Approved
             guild = client.get_guild(SERVER_ID)
@@ -394,7 +394,7 @@ async def on_raw_reaction_add(payload):
             member = client.get_guild(SERVER_ID).get_member(payload.user_id)
             if role not in member.roles:
                 await member.add_roles(role)
-                await client.get_channel(event_channel).send(member.name + " has joined the event")
+                await client.get_channel(event_channel).send(member.nick + " has joined the event")
         except Exception as e:
             await client.get_channel(payload.channel_id).send(str(e))
             await client.get_channel(payload.channel_id).send("Error thrown with invalid event invite")
