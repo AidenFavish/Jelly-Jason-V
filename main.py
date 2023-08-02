@@ -36,18 +36,17 @@ tree = discord.app_commands.CommandTree(client)
 async def daily_check(force: bool = False):
     with open("storage.json", "r") as j:
         data = json.load(j)
-    print(time.time() / 86400 + 0.5, flush=True)  # +0.75 is to offset utc time
-    print((datetime.date(day=30, month=7, year=2023) - datetime.date.today()).days)
-    if data["Date"] != int(time.time() / 86400 + 0.75) or force:
+    #print(time.time() / 86400 + 0.5, flush=True)  # +0.75 is to offset utc time
+    if data["Date"] != int(time.time() / 86400 - (7/24.0)) or force:
         print("Daily check triggered")
-        data["Date"] = int(time.time() / 86400 + 0.75)
+        data["Date"] = int(time.time() / 86400 - (7/24.0))
         with open("storage.json", "w") as j:
             json.dump(data, j)
 
         # one a day code here
         temp_events = []
         for key, value in data["EventApplications"].items():
-            days_until = (datetime.date(day=value[1], month=value[2], year=value[3]) - datetime.date.today()).days
+            days_until = (datetime.datetime(day=value[1], month=value[2], year=value[3], hour=23, minute=59, second=59) - datetime.datetime.now()).days
             if days_until < 0:
                 try:
                     archives = client.get_channel(channels.ARCHIVES_CAT)
@@ -74,7 +73,8 @@ async def daily_check(force: bool = False):
             data["EventApplications"].pop(i)
         with open("storage.json", "w") as j:
             json.dump(data, j)
-        await client.get_channel(channels.TESTING).send("Rebooting...")
+        await client.get_channel(channels.TESTING).send("Daily check\nRebooting...")
+        await asyncio.sleep(5)
         os.system('reboot')
 
     # repeater
@@ -174,6 +174,67 @@ async def event_invite(interaction: discord.Interaction, member: discord.Member)
                 "Something went wrong. Make sure you are using this command in a designated event channel.")
     except Exception as e:
         print(str(e) + "\nerror thrown while doing specific invite")
+
+
+@tree.command(name='change_date', description='When done in a designated event channel, changes the date of the event')
+async def change_date(interaction: discord.Interaction, day: int, month: int, year: int):
+    with open("storage.json", "r") as j:
+        data = json.load(j)
+
+    success = False
+
+    for key, value in data["EventApplications"].items():
+        if len(value) >= 10 and value[9] == interaction.channel_id:
+
+            data["EventApplications"][key][1] = day
+            data["EventApplications"][key][2] = month
+            data["EventApplications"][key][3] = year
+            with open("storage.json", "w") as j:
+                json.dump(data, j)
+
+            await client.get_channel(channels.GENERAL).send(
+                "# Notice\nThe event ``" + value[0] + "`` has had its date change to ``"
+                + str(datetime.date(day=day, month=month, year=year).strftime('%A, %B %d, %Y')) + "`")
+
+            success = True
+
+    try:
+        if success:
+            await interaction.response.send_message("date changed")
+
+        else:
+            await interaction.response.send_message(
+                "Something went wrong. Make sure you are using this command in a designated event channel.")
+    except Exception as e:
+        print(str(e) + "\nerror thrown while doing change date")
+
+
+@tree.command(name='restart', description='Owner only')
+async def restart(interaction: discord.Interaction):
+    try:
+        if interaction.user.id == ADMIN_ID:
+            await interaction.response.send_message('Restarting...')
+        else:
+            await interaction.response.send_message('You need to be the admin to use this command')
+    except Exception as e:
+        await client.get_user(ADMIN_ID).send(str(e) + "\nError thrown when trying to restart")
+    await asyncio.sleep(2)
+    if interaction.user.id == ADMIN_ID:
+        os.system('reboot')
+
+
+@tree.command(name='power_off', description='Owner only')
+async def power_off(interaction: discord.Interaction):
+    try:
+        if interaction.user.id == ADMIN_ID:
+            await interaction.response.send_message('Powering off...')
+        else:
+            await interaction.response.send_message('You need to be the admin to use this command')
+    except Exception as e:
+        await client.get_user(ADMIN_ID).send(str(e) + "\nError thrown when trying to power off")
+    await asyncio.sleep(2)
+    if interaction.user.id == ADMIN_ID:
+        os.system('poweroff')
 
 
 @tree.command(name='sync', description='Owner only')
