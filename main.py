@@ -33,7 +33,15 @@ client = aclient()
 tree = discord.app_commands.CommandTree(client)
 
 
-async def daily_check(force: bool = False):
+@tree.command(name='daily_check', description='Owner only')
+async def daily_check(interaction: discord.Interaction, force: bool = False):
+    if interaction.user.id != ADMIN_ID:
+        try:
+            await interaction.response.send_message("You must be the owner to use this command")
+        except Exception as e:
+            await client.get_channel(ADMIN_DMS).send("Something went wrong with a daily check")
+        return
+
     with open("storage.json", "r") as j:
         data = json.load(j)
     #print(time.time() / 86400 + 0.5, flush=True)  # +0.75 is to offset utc time
