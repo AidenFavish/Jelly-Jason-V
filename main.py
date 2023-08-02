@@ -177,7 +177,7 @@ async def leave_event(interaction: discord.Interaction):
         await member.remove_roles(role)
         await interaction.channel.send(member.nick + " has left the event")
     except Exception as e:
-        await client.get_channel(interaction.channel.id).send(str(e))
+        await client.get_channel(interaction.channel.id).send(str(e.args))
         await client.get_channel(interaction.channel.id).send("Error thrown when trying to leave event")
 
 @tree.command(description='When done in a designated event channel invites member personally')
