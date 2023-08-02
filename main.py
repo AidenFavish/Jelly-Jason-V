@@ -171,7 +171,7 @@ async def leave_event(interaction: discord.Interaction):
         try:
             await interaction.response.send_message("Something went wrong, make sure your in a designated event channel")
         except Exception as e:
-            await client.get_channel(ADMIN_DMS).send(str(e) + "\nSomething went wrong when leaving an event")
+            await client.get_user(ADMIN_ID).send(str(e) + "\nSomething went wrong when leaving an event")
         return
 
     try:
@@ -322,12 +322,13 @@ async def on_raw_reaction_add(payload):
             # create channel
             try:
                 event_channel = await client.get_channel(channels.EVENTS_CAT).create_text_channel(name=event_data[0])
+                await event_channel.edit(sync_permissions=False)
                 await event_channel.set_permissions(role_id, view_channel=True)
                 await event_channel.set_permissions(guild.get_role(ROCK), view_channel=False)
                 event_author = guild.get_member(event_data[7])
                 await event_author.add_roles(role_id)
             except Exception as e:
-                await client.get_channel(ADMIN_DMS).send(str(e) + "\nError with creating channel")
+                await client.get_user(ADMIN_ID).send(str(e) + "\nError with creating channel")
 
             data["EventInvites"][str(invite1.id)] = str(payload.message_id)
             data["EventInvites"][str(invite2.id)] = str(payload.message_id)
