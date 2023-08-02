@@ -36,12 +36,14 @@ tree = discord.app_commands.CommandTree(client)
 
 @tree.command(name='daily_check', description='Owner only')
 async def daily_check(interaction: discord.Interaction, force: bool = False):
-    if interaction.user.id != ADMIN_ID:
-        try:
+    try:
+        if interaction.user.id != ADMIN_ID:
             await interaction.response.send_message("You must be the owner to use this command")
-        except Exception as e:
-            await client.get_channel(ADMIN_DMS).send("Something went wrong with a daily check")
-        return
+        else:
+            await interaction.response.send_message("Attempting to do a daily check...")
+    except Exception as e:
+        await client.get_channel(ADMIN_DMS).send("Something went wrong with a daily check")
+    return
 
     with open("storage.json", "r") as j:
         data = json.load(j)
