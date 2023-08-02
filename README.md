@@ -21,6 +21,10 @@ When done in a designated event channel Jason will change the date of the event.
 
 ### ------------------------------------------------------
 
+#### 🟢 /leave_event
+When done in a designated event channel you will leave the event.
+
+### ------------------------------------------------------
 #### 🔴 /addRole ```Role name```
 Jelly Jason will attempt to give you the role you asked for if it exists, and you have the required permission.
 

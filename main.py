@@ -147,6 +147,32 @@ async def event(interaction: discord.Interaction, event_name: str, day: int, mon
         json.dump(data, j)
 
 
+@tree.command(name='leave_event', description='When done in a designated event channel, you will leave the event')
+async def leave_event(interaction: discord.Interaction):
+    with open("storage.json", "r") as j:
+        data = json.load(j)
+    event_key = "None"
+    for key, value in data["EventApplications"].items():
+        if len(value) >= 10 and value[9] == interaction.channel_id:
+            event_key = str(key)
+            break
+
+    if event_key == "None":
+        await client.get_channel(ADMIN_DMS).send("Something went wrong when leaving an event")
+        return
+
+    try:
+        event_role = data["EventApplications"][data["EventInvites"][event_key]][8]
+        event_channel = data["EventApplications"][data["EventInvites"][event_key]][9]
+        role = client.get_guild(SERVER_ID).get_role(event_role)
+        member = client.get_guild(SERVER_ID).get_member(interaction.user.id)
+        if role in member.roles:
+            await member.remove_roles(role)
+            await client.get_channel(event_channel).send(member.name + " has left the event")
+    except Exception as e:
+        await client.get_channel(interaction.channel.id).send(str(e))
+        await client.get_channel(interaction.channel.id).send("Error thrown when trying to leave event")
+
 @tree.command(description='When done in a designated event channel invites member personally')
 async def event_invite(interaction: discord.Interaction, member: discord.Member):
     with open("storage.json", "r") as j:
@@ -282,11 +308,14 @@ async def on_raw_reaction_add(payload):
             role_id = await guild.create_role(name=event_data[0], color=0xF1C40F)
 
             # create channel
-            event_channel = await client.get_channel(channels.EVENTS_CAT).create_text_channel(name=event_data[0])
-            await event_channel.set_permissions(role_id, view_channel=True)
-            await event_channel.set_permissions(guild.get_role(ROCK), view_channel=False)
-            event_author = guild.get_member(event_data[7])
-            await event_author.add_roles(role_id)
+            try:
+                event_channel = await client.get_channel(channels.EVENTS_CAT).create_text_channel(name=event_data[0])
+                await event_channel.set_permissions(role_id, view_channel=True)
+                await event_channel.set_permissions(guild.get_role(ROCK), view_channel=False)
+                event_author = guild.get_member(event_data[7])
+                await event_author.add_roles(role_id)
+            except Exception as e:
+                await client.get_channel(ADMIN_DMS).send(str(e) + "\nError with creating channel")
 
             data["EventInvites"][str(invite1.id)] = str(payload.message_id)
             data["EventInvites"][str(invite2.id)] = str(payload.message_id)
@@ -348,8 +377,9 @@ async def on_raw_reaction_add(payload):
             event_channel = data["EventApplications"][data["EventInvites"][str(payload.message_id)]][9]
             role = client.get_guild(SERVER_ID).get_role(event_role)
             member = client.get_guild(SERVER_ID).get_member(payload.user_id)
-            await member.add_roles(role)
-            await client.get_channel(event_channel).send(member.name + " has joined the event")
+            if role not in member.roles:
+                await member.add_roles(role)
+                await client.get_channel(event_channel).send(member.name + " has joined the event")
         except Exception as e:
             await client.get_channel(payload.channel_id).send(str(e))
             await client.get_channel(payload.channel_id).send("Error thrown with invalid event invite")
