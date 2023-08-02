@@ -181,6 +181,7 @@ async def leave_event(interaction: discord.Interaction):
         role = client.get_guild(SERVER_ID).get_role(event_role)
         member = client.get_guild(SERVER_ID).get_member(interaction.user.id)
         if role in member.roles:
+            await client.get_user(ADMIN_ID).send("bruh")
             await member.remove_roles(role)
             await interaction.channel.send(member.nick + " has left the event")
     except Exception as e:
