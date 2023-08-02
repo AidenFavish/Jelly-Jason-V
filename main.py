@@ -175,7 +175,7 @@ async def leave_event(interaction: discord.Interaction):
         role = client.get_guild(SERVER_ID).get_role(event_role)
         member = client.get_guild(SERVER_ID).get_member(interaction.user.id)
         await member.remove_roles(role)
-        if type(member.nick) == str:
+        if type(str(member.nick)) == str:
             await interaction.channel.send(member.nick + " has left the event")
         else:
             await interaction.channel.send(member.name + " has left the event")
@@ -390,7 +390,7 @@ async def on_raw_reaction_add(payload):
             member = client.get_guild(SERVER_ID).get_member(payload.user_id)
             if role not in member.roles:
                 await member.add_roles(role)
-                if type(member.nick) == str:
+                if type(str(member.nick)) == str:
                     await client.get_channel(event_channel).send(member.nick + " has joined the event")
                 else:
                     await client.get_channel(event_channel).send(member.name + " has joined the event")
