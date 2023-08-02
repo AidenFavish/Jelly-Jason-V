@@ -175,10 +175,7 @@ async def leave_event(interaction: discord.Interaction):
         role = client.get_guild(SERVER_ID).get_role(event_role)
         member = client.get_guild(SERVER_ID).get_member(interaction.user.id)
         await member.remove_roles(role)
-        if type(str(member.nick)) == str:
-            await interaction.channel.send(member.nick + " has left the event")
-        else:
-            await interaction.channel.send(member.name + " has left the event")
+        await interaction.channel.send(member.name + " has left the event")
     except Exception as e:
         await client.get_channel(interaction.channel.id).send(str(e.__cause__))
         await client.get_channel(interaction.channel.id).send("Error thrown when trying to leave event")
@@ -193,8 +190,7 @@ async def event_invite(interaction: discord.Interaction, member: discord.Member)
     for key, value in data["EventApplications"].items():
         if len(value) >= 10 and value[9] == interaction.channel_id:
             invite_msg = await member.send(
-                "# Your invited to: " + value[0] + "\nIt will take place: " + str(value[2]) + ", " + str(
-                    value[1]) + ", " + str(value[3]) + "\nLocation: " + value[4] + "\nDescription: " + value[
+                "# Your invited to: " + value[0] + "\nIt will take place: " + str(datetime.date(day=value[1], month=value[2], year=value[3]).strftime('%A, %B %d, %Y')) + "\nLocation: " + value[4] + "\nDescription: " + value[
                     5] + "\nLink: " + value[6] + "\n\nReact with a 👍 to join!")
             await invite_msg.add_reaction("👍")
             data["EventInvites"][str(invite_msg.id)] = key
@@ -390,10 +386,7 @@ async def on_raw_reaction_add(payload):
             member = client.get_guild(SERVER_ID).get_member(payload.user_id)
             if role not in member.roles:
                 await member.add_roles(role)
-                if type(str(member.nick)) == str:
-                    await client.get_channel(event_channel).send(member.nick + " has joined the event")
-                else:
-                    await client.get_channel(event_channel).send(member.name + " has joined the event")
+                await client.get_channel(event_channel).send(member.name + " has joined the event")
         except Exception as e:
             await client.get_channel(payload.channel_id).send(str(e))
             await client.get_channel(payload.channel_id).send("Error thrown with invalid event invite")
