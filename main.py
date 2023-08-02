@@ -21,6 +21,7 @@ ADMIN_ID = 779481064636809246
 ADMIN_DMS = 948329194050445372
 ROCK = 947983184409272340
 
+# FLAG
 
 class aclient(discord.Client):
     def __init__(self):
@@ -82,6 +83,7 @@ async def daily_check(interaction: discord.Interaction, force: bool = False):
         with open("storage.json", "w") as j:
             json.dump(data, j)
         await client.get_channel(channels.TESTING).send("Daily check\nRebooting...")
+        os.system('git pull')
         await asyncio.sleep(5)
         os.system('reboot')
 
