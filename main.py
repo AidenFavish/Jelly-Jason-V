@@ -21,7 +21,7 @@ ADMIN_ID = 779481064636809246
 ADMIN_DMS = 948329194050445372
 ROCK = 947983184409272340
 
-# FLAG
+# FLAG2
 
 class aclient(discord.Client):
     def __init__(self):
@@ -168,8 +168,10 @@ async def leave_event(interaction: discord.Interaction):
             break
 
     if event_key == "None":
-        await client.get_channel(ADMIN_DMS).send("Something went wrong when leaving an event")
-        await interaction.response.send_message("Something went wrong, make sure your in a designated event channel")
+        try:
+            await interaction.response.send_message("Something went wrong, make sure your in a designated event channel")
+        except Exception as e:
+            await client.get_channel(ADMIN_DMS).send(str(e) + "\nSomething went wrong when leaving an event")
         return
 
     try:
