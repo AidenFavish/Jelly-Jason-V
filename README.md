@@ -14,6 +14,10 @@ The event application will be submitted for an admin to review, if the event is 
 
 #### 🟢 /event_invite ```@member```
 When done in a designated event channel Jason will personally invite the member to the event.
+### ------------------------------------------------------
+
+#### 🟢 /change_date ```Day```, ```Month```, ```Year```
+When done in a designated event channel Jason will change the date of the event.
 
 ### ------------------------------------------------------
 
