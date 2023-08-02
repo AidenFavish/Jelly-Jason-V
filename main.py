@@ -84,7 +84,8 @@ async def daily_check(interaction: discord.Interaction, force: bool = False):
             data["EventApplications"].pop(i)
         with open("storage.json", "w") as j:
             json.dump(data, j)
-        await client.get_channel(channels.TESTING).send("Daily check\nRebooting...")
+        testingCh = client.get_channel(channels.TESTING)
+        await testingCh.send("Daily check\nRebooting...")
         os.system('git pull')
         await asyncio.sleep(5)
         os.system('reboot')
@@ -177,9 +178,11 @@ async def leave_event(interaction: discord.Interaction):
         return
 
     try:
+        await client.get_user(ADMIN_ID).send("bruh2")
         event_role = data["EventApplications"][data["EventInvites"][event_key]][8]
         role = client.get_guild(SERVER_ID).get_role(event_role)
         member = client.get_guild(SERVER_ID).get_member(interaction.user.id)
+        await client.get_user(ADMIN_ID).send("bruh")
         await member.remove_roles(role)
         await interaction.channel.send(member.nick + " has left the event")
     except Exception as e:
