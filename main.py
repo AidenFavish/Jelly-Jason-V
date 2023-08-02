@@ -39,11 +39,11 @@ async def daily_check(interaction: discord.Interaction, force: bool = False):
     try:
         if interaction.user.id != ADMIN_ID:
             await interaction.response.send_message("You must be the owner to use this command")
+            return
         else:
             await interaction.response.send_message("Attempting to do a daily check...")
     except Exception as e:
         await client.get_channel(ADMIN_DMS).send("Something went wrong with a daily check")
-    return
 
     with open("storage.json", "r") as j:
         data = json.load(j)
@@ -178,7 +178,6 @@ async def leave_event(interaction: discord.Interaction):
         return
 
     try:
-        await client.get_user(ADMIN_ID).send("bruh2")
         event_role = data["EventApplications"][data["EventInvites"][event_key]][8]
         role = client.get_guild(SERVER_ID).get_role(event_role)
         member = client.get_guild(SERVER_ID).get_member(interaction.user.id)
