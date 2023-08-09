@@ -8,6 +8,8 @@ import datetime
 import time
 import asyncio
 import os
+import backgroundTasks
+import customCommands
 
 intents = discord.Intents.default()
 intents.members = True
@@ -20,6 +22,7 @@ SERVER_ID = 895359434539302953
 ADMIN_ID = 779481064636809246
 ADMIN_DMS = 948329194050445372
 ROCK = 947983184409272340
+
 
 # FLAG2
 
@@ -34,22 +37,22 @@ client = aclient()
 tree = discord.app_commands.CommandTree(client)
 
 
-
 async def daily_check(force: bool = False):
-
     with open("storage.json", "r") as j:
         data = json.load(j)
-    #print(time.time() / 86400 + 0.5, flush=True)  # +0.75 is to offset utc time
-    if data["Date"] != int(time.time() / 86400 - (7/24.0)) or force:
+    # print(time.time() / 86400 + 0.5, flush=True)  # +0.75 is to offset utc time
+    days_since_epoch = (datetime.datetime.now() - datetime.datetime(day=28, month=7, year=2022, hour=14, minute=32, second=30)).days
+    if data["Date"] != int(days_since_epoch) or force:
         print("Daily check triggered")
-        data["Date"] = int(time.time() / 86400 - (7/24.0))
+        data["Date"] = int(days_since_epoch)
         with open("storage.json", "w") as j:
             json.dump(data, j)
 
         # one a day code here
         temp_events = []
         for key, value in data["EventApplications"].items():
-            days_until = (datetime.datetime(day=value[1], month=value[2], year=value[3], hour=23, minute=59, second=59) - datetime.datetime.now()).days
+            days_until = (datetime.datetime(day=value[1], month=value[2], year=value[3], hour=23, minute=59,
+                                            second=59) - datetime.datetime.now()).days
             if days_until < 0:
                 try:
                     archives = client.get_channel(channels.ARCHIVES_CAT)
@@ -165,7 +168,8 @@ async def leave_event(interaction: discord.Interaction):
 
     if event_key == "None":
         try:
-            await interaction.response.send_message("Something went wrong, make sure your in a designated event channel")
+            await interaction.response.send_message(
+                "Something went wrong, make sure your in a designated event channel")
         except Exception as e:
             await client.get_user(ADMIN_ID).send(str(e) + "\nSomething went wrong when leaving an event")
         return
@@ -180,6 +184,7 @@ async def leave_event(interaction: discord.Interaction):
         await client.get_channel(interaction.channel.id).send(str(e.__cause__))
         await client.get_channel(interaction.channel.id).send("Error thrown when trying to leave event")
 
+
 @tree.command(description='When done in a designated event channel invites member personally')
 async def event_invite(interaction: discord.Interaction, member: discord.Member):
     with open("storage.json", "r") as j:
@@ -190,7 +195,9 @@ async def event_invite(interaction: discord.Interaction, member: discord.Member)
     for key, value in data["EventApplications"].items():
         if len(value) >= 10 and value[9] == interaction.channel_id:
             invite_msg = await member.send(
-                "# Your invited to: " + value[0] + "\nIt will take place: " + str(datetime.date(day=value[1], month=value[2], year=value[3]).strftime('%A, %B %d, %Y')) + "\nLocation: " + value[4] + "\nDescription: " + value[
+                "# Your invited to: " + value[0] + "\nIt will take place: " + str(
+                    datetime.date(day=value[1], month=value[2], year=value[3]).strftime(
+                        '%A, %B %d, %Y')) + "\nLocation: " + value[4] + "\nDescription: " + value[
                     5] + "\nLink: " + value[6] + "\n\nReact with a 👍 to join!")
             await invite_msg.add_reaction("👍")
             data["EventInvites"][str(invite_msg.id)] = key
@@ -217,7 +224,6 @@ async def change_date(interaction: discord.Interaction, day: int, month: int, ye
 
     for key, value in data["EventApplications"].items():
         if len(value) >= 10 and value[9] == interaction.channel_id:
-
             data["EventApplications"][key][1] = day
             data["EventApplications"][key][2] = month
             data["EventApplications"][key][3] = year
