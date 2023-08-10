@@ -27,7 +27,7 @@ ADMIN_DMS = 948329194050445372
 ROCK = 947983184409272340
 
 
-# FLAG 3
+FLAG = 3
 
 class aclient(discord.Client):
     def __init__(self):
@@ -291,6 +291,7 @@ async def system_summary(interaction: discord.Interaction):
         cpu_temp = -9999.0
 
     summary = "Last restarted: " + time_logged + "\n"
+    summary += "Flag: " + str(FLAG) + "\n"
     summary += 'CPU usage: {}%'.format(cpu_usage) + "\n"
     summary += 'Memory usage: {}%'.format(memory_usage) + "\n"
     summary += 'CPU temperature: {}°C'.format(cpu_temp)
