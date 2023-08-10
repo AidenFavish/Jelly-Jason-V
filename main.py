@@ -27,7 +27,7 @@ ADMIN_DMS = 948329194050445372
 ROCK = 947983184409272340
 
 
-# FLAG2
+# FLAG 3
 
 class aclient(discord.Client):
     def __init__(self):
