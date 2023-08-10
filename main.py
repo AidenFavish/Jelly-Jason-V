@@ -257,7 +257,7 @@ async def restart(interaction: discord.Interaction):
     try:
         if interaction.user.id == ADMIN_ID:
             await interaction.response.send_message('Restarting...')
-            os.system('git pull')
+            os.system('sudo git pull')
             await asyncio.sleep(5)
             os.system('reboot')
         else:
@@ -474,8 +474,8 @@ async def on_raw_reaction_remove(payload):
 async def on_message(message: discord.Message):
     if detect(str(message.content)) != 'en':
         translated = customCommands.translate(message.content)
-        embed = discord.Embed(title=message.author.name + " (Translated message)", url=message.jump_url,
-                              description=translated, color=message.author.top_role.color)
+        embed = discord.Embed(title=message.author.name + " translated message (" + str(detect(str(message.content))) + ")", url=message.jump_url,
+                              description=str(translated), color=message.author.top_role.color)
         await client.get_channel(channels.TRANSLATOR).send(embed=embed)
         print(translated)
 
