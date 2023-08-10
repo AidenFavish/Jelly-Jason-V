@@ -36,6 +36,8 @@ class aclient(discord.Client):
 
 client = aclient()
 tree = discord.app_commands.CommandTree(client)
+# get datetime of last restarted
+time_logged = datetime.datetime.now()
 
 
 async def daily_check(force: bool = False):
@@ -265,8 +267,6 @@ async def restart(interaction: discord.Interaction):
 @tree.command(name='system_summary', description='For debug purposes')
 async def system_summary(interaction: discord.Interaction):
     file = discord.File("storage.json")
-    # date
-    time_logged = datetime.datetime.now()
 
     # Get the current CPU usage
     cpu_usage = psutil.cpu_percent()
