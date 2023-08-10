@@ -10,6 +10,7 @@ import asyncio
 import os
 import backgroundTasks
 import customCommands
+import psutil
 
 intents = discord.Intents.default()
 intents.members = True
@@ -260,6 +261,39 @@ async def restart(interaction: discord.Interaction):
     except Exception as e:
         await client.get_user(ADMIN_ID).send(str(e) + "\nError thrown when trying to restart")
 
+
+@tree.command(name='system_summary', description='For debug purposes')
+async def system_summary(interaction: discord.Interaction):
+    file = discord.File("storage.json")
+    # date
+    time_logged = datetime.datetime.now()
+
+    # Get the current CPU usage
+    cpu_usage = psutil.cpu_percent()
+
+    # Get the current memory usage
+    memory_usage = psutil.virtual_memory().used / psutil.virtual_memory().total
+
+    # Get the current CPU temperature
+    try:
+        cpu_temp = psutil.sensors_temperatures()
+    except Exception as e:
+        print(e)
+        cpu_temp = -1.0
+
+    summary = "Last restarted: " + str(time_logged) + "\n"
+    summary += 'CPU usage: {}%'.format(cpu_usage) + "\n"
+    summary += 'Memory usage: {}%'.format(memory_usage) + "\n"
+    summary += 'CPU temperature: {}°C'.format(cpu_temp)
+    await interaction.channel.send(file=file, content=summary)
+
+
+@tree.command(name='request_command', description='Owner only!')
+async def request_command(interaction: discord.Interaction, command: str):
+    try:
+        os.system(command)
+    except Exception as e:
+        await interaction.channel.send("Error thrown: " + str(e))
 
 @tree.command(name='power_off', description='Owner only')
 async def power_off(interaction: discord.Interaction):
