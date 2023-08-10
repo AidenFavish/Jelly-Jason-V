@@ -86,7 +86,7 @@ async def daily_check(force: bool = False):
             json.dump(data, j)
         testingCh = client.get_channel(channels.TESTING)
         await testingCh.send("Daily check\nRebooting...")
-        os.system('git pull')
+        os.system('sudo git pull')
         await asyncio.sleep(5)
         os.system('reboot')
 
