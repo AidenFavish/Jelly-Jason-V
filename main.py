@@ -290,10 +290,14 @@ async def system_summary(interaction: discord.Interaction):
 
 @tree.command(name='request_command', description='Owner only!')
 async def request_command(interaction: discord.Interaction, command: str):
-    try:
-        os.system(command)
-    except Exception as e:
-        await interaction.channel.send("Error thrown: " + str(e))
+    if interaction.user.id == ADMIN_ID:
+        try:
+            os.system(command)
+        except Exception as e:
+            await interaction.channel.send("Error thrown: " + str(e))
+    else:
+        await interaction.channel.send("You must be the owner to use this command")
+
 
 @tree.command(name='power_off', description='Owner only')
 async def power_off(interaction: discord.Interaction):
