@@ -471,7 +471,7 @@ async def on_raw_reaction_remove(payload):
 
 
 @client.event
-async def on_message(message: discord.Message):
+async def on_message(message):
     if detect(str(message.content)) != 'en':
         translated = customCommands.translate(message.content)
         embed = discord.Embed(title=message.author.name + " translated message (" + str(detect(str(message.content))) + ")", url=message.jump_url,
