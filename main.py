@@ -37,14 +37,14 @@ class aclient(discord.Client):
 client = aclient()
 tree = discord.app_commands.CommandTree(client)
 # get datetime of last restarted
-time_logged = datetime.datetime.now()
+time_logged = str(datetime.datetime.now())
 
 
 async def daily_check(force: bool = False):
     with open("storage.json", "r") as j:
         data = json.load(j)
     # print(time.time() / 86400 + 0.5, flush=True)  # +0.75 is to offset utc time
-    days_since_epoch = (datetime.datetime.now() - datetime.datetime(day=28, month=7, year=2022, hour=14, minute=32, second=30)).days
+    days_since_epoch = (datetime.datetime.now() - datetime.datetime(day=28, month=7, year=2022, hour=2, minute=32, second=30)).days
     if data["Date"] != int(days_since_epoch) or force:
         print("Daily check triggered")
         data["Date"] = int(days_since_epoch)
@@ -276,12 +276,12 @@ async def system_summary(interaction: discord.Interaction):
 
     # Get the current CPU temperature
     try:
-        cpu_temp = psutil.sensors_temperatures()
+        cpu_temp = psutil.sensors_temperatures()['cpu'][0].current
     except Exception as e:
         print(e)
-        cpu_temp = -1.0
+        cpu_temp = -9999.0
 
-    summary = "Last restarted: " + str(time_logged) + "\n"
+    summary = "Last restarted: " + time_logged + "\n"
     summary += 'CPU usage: {}%'.format(cpu_usage) + "\n"
     summary += 'Memory usage: {}%'.format(memory_usage) + "\n"
     summary += 'CPU temperature: {}°C'.format(cpu_temp)
