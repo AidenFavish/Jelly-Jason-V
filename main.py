@@ -267,7 +267,7 @@ async def restart(interaction: discord.Interaction):
 
 @tree.command(name='translate', description='translate text to english')
 async def translate(interaction: discord.Interaction, text_in_other_language: str):
-    translated = customCommands.translate(text_in_other_language)
+    translated = await customCommands.translate(text_in_other_language)
     await interaction.response.send_message('You said: "' + str(translated) + '"')
     print(translated)
 
@@ -473,7 +473,7 @@ async def on_raw_reaction_remove(payload):
 @client.event
 async def on_message(message):
     if detect(str(message.content)) != 'en':
-        translated = customCommands.translate(message.content)
+        translated = await customCommands.translate(message.content)
         embed = discord.Embed(title=message.author.name + " translated message (" + str(detect(str(message.content))) + ")", url=message.jump_url,
                               description=str(translated), color=message.author.top_role.color)
         await client.get_channel(channels.TRANSLATOR).send(embed=embed)
