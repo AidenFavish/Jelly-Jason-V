@@ -285,7 +285,7 @@ async def system_summary(interaction: discord.Interaction):
     summary += 'CPU usage: {}%'.format(cpu_usage) + "\n"
     summary += 'Memory usage: {}%'.format(memory_usage) + "\n"
     summary += 'CPU temperature: {}°C'.format(cpu_temp)
-    await interaction.channel.send(file=file, content=summary)
+    await interaction.response.send_message(file=file, content=summary)
 
 
 @tree.command(name='request_command', description='Owner only!')
@@ -294,9 +294,9 @@ async def request_command(interaction: discord.Interaction, command: str):
         try:
             os.system(command)
         except Exception as e:
-            await interaction.channel.send("Error thrown: " + str(e))
+            await interaction.response.send_message("Error thrown: " + str(e))
     else:
-        await interaction.channel.send("You must be the owner to use this command")
+        await interaction.response.send_message("You must be the owner to use this command")
 
 
 @tree.command(name='power_off', description='Owner only')
