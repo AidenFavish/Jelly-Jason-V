@@ -40,7 +40,7 @@ client = aclient()
 tree = discord.app_commands.CommandTree(client)
 # get datetime of last restarted
 time_logged = str(datetime.datetime.now())
-other_languages = ['nl', 'fr', 'de', 'he', 'hi', 'ja', 'ko', 'pl', 'pt', 'ru', 'es', 'vi', 'yi', 'zh']
+other_languages = ['nl', 'fr', 'de', 'he', 'hi', 'ja', 'ko', 'pl', 'pt', 'ru', 'es', 'vi', 'yi', 'zh', 'zh-cn']
 
 async def daily_check(force: bool = False):
     with open("storage.json", "r") as j:
