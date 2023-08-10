@@ -276,7 +276,7 @@ async def system_summary(interaction: discord.Interaction):
 
     # Get the current CPU temperature
     try:
-        cpu_temp = psutil.sensors_temperatures()['cpu'][0].current
+        cpu_temp = psutil.sensors_temperatures()['cpu_thermal'][0].current
     except Exception as e:
         print(e)
         cpu_temp = -9999.0
