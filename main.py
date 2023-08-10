@@ -40,7 +40,7 @@ client = aclient()
 tree = discord.app_commands.CommandTree(client)
 # get datetime of last restarted
 time_logged = str(datetime.datetime.now())
-
+other_languages = ['nl', 'fr', 'de', 'he', 'hi', 'ja', 'ko', 'pl', 'pt', 'ru', 'es', 'vi', 'yi', 'zh']
 
 async def daily_check(force: bool = False):
     with open("storage.json", "r") as j:
@@ -268,7 +268,9 @@ async def restart(interaction: discord.Interaction):
 @tree.command(name='translate', description='translate text to english')
 async def translate(interaction: discord.Interaction, text_in_other_language: str):
     translated = await customCommands.translate(text_in_other_language)
-    await interaction.response.send_message('You said: "' + str(translated) + '"')
+    embed = discord.Embed(title=interaction.user.name + " translated message (" + str(detect(text_in_other_language)) + ")",
+                          description=str(translated), color=interaction.user.top_role.color)
+    await client.get_channel(channels.TRANSLATOR).send(embed=embed)
     print(translated)
 
 @tree.command(name='system_summary', description='For debug purposes')
@@ -472,7 +474,7 @@ async def on_raw_reaction_remove(payload):
 
 @client.event
 async def on_message(message):
-    if detect(str(message.content)) != 'en':
+    if message.author.id != client.user.id and detect(str(message.content)) in other_languages:
         translated = await customCommands.translate(message.content)
         embed = discord.Embed(title=message.author.name + " translated message (" + str(detect(str(message.content))) + ")", url=message.jump_url,
                               description=str(translated), color=message.author.top_role.color)
