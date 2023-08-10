@@ -270,7 +270,7 @@ async def translate(interaction: discord.Interaction, text_in_other_language: st
     translated = await customCommands.translate(text_in_other_language)
     embed = discord.Embed(title=interaction.user.name + " translated message (" + str(detect(text_in_other_language)) + ")",
                           description=str(translated), color=interaction.user.top_role.color)
-    await client.get_channel(channels.TRANSLATOR).send(embed=embed)
+    await interaction.response.send_message(embed=embed)
     print(translated)
 
 @tree.command(name='system_summary', description='For debug purposes')
@@ -475,9 +475,10 @@ async def on_raw_reaction_remove(payload):
 
 @client.event
 async def on_message(message):
-    if message.author.id != client.user.id and detect(str(message.content)) in other_languages:
+    lang: str = detect(str(message.content))
+    if message.author.id != client.user.id and lang in other_languages:
         translated = await customCommands.translate(message.content)
-        embed = discord.Embed(title=message.author.name + " translated message (" + str(detect(str(message.content))) + ")", url=message.jump_url,
+        embed = discord.Embed(title=message.author.name + " translated message (" + lang + ")", url=message.jump_url,
                               description=str(translated), color=message.author.top_role.color)
         await client.get_channel(channels.TRANSLATOR).send(embed=embed)
         print(translated)
