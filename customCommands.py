@@ -2,8 +2,8 @@ import deepl
 import secrets
 
 
-async def translate(input: str) -> str:
+async def translate(input):
     translator = deepl.Translator(secrets.tokenTranslate)
-    result = translator.translate_text(input, target_lang='en-us')
+    result = translator.translate_text(str(input), target_lang='en-us')
     translated_text = result.text
     return str(translated_text)
