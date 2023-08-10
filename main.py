@@ -11,6 +11,8 @@ import os
 import backgroundTasks
 import customCommands
 import psutil
+from langdetect import detect
+
 
 intents = discord.Intents.default()
 intents.members = True
@@ -263,6 +265,11 @@ async def restart(interaction: discord.Interaction):
     except Exception as e:
         await client.get_user(ADMIN_ID).send(str(e) + "\nError thrown when trying to restart")
 
+@tree.command(name='translate', description='translate text to english')
+async def translate(interaction: discord.Interaction, text_in_other_language: str):
+    translated = customCommands.translate(text_in_other_language)
+    await interaction.response.send_message('You said: "' + str(translated) + '"')
+    print(translated)
 
 @tree.command(name='system_summary', description='For debug purposes')
 async def system_summary(interaction: discord.Interaction):
@@ -391,7 +398,9 @@ async def on_raw_reaction_add(payload):
                 else:
                     del data["PG"][i]
                     bad_msg = await client.get_channel(payload.channel_id).fetch_message(payload.message_id)
+                    await client.get_channel(channels.CENSORED_LOG).send(bad_msg.author.name + ' said "' + bad_msg.content + '"')
                     await bad_msg.delete()
+
 
                 with open("storage.json", "w") as j:
                     json.dump(data, j)
@@ -462,9 +471,12 @@ async def on_raw_reaction_remove(payload):
 
 
 @client.event
-async def on_message(message):
-    # Syncs to server
-    print()
-
+async def on_message(message: discord.Message):
+    if detect(str(message.content)) != 'en':
+        translated = customCommands.translate(message.content)
+        embed = discord.Embed(title=message.author.name + " (Translated message)", url=message.jump_url,
+                              description=translated, color=message.author.top_role.color)
+        await client.get_channel(channels.TRANSLATOR).send(embed=embed)
+        print(translated)
 
 client.run(tokenD)
