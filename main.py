@@ -116,7 +116,7 @@ async def on_ready():
 
     await daily_check()
 
-    # Todo update last bot refresh time to control pannel
+    await client.get_channel(channels.TESTING).send("Ready")
 
 
 @client.event
@@ -326,10 +326,11 @@ async def request_command(interaction: discord.Interaction, command: str):
 
 
 @tree.command(name='add_whitelist', description='Owner only!')
-async def add_whitelist(interaction: discord.Interaction, id: str, manual: bool = False):
+async def add_whitelist(interaction: discord.Interaction, id1: str, manual: bool = False):
     try:
         if interaction.user.id == ADMIN_ID:
-            i = client.get_user(int(id))
+            i = client.get_user(int(id1))
+            print(int(id1))
             with open("storage.json", "r") as j:
                 data = json.load(j)
 
