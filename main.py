@@ -322,7 +322,7 @@ async def request_command(interaction: discord.Interaction, command: str):
 
 
 @tree.command(name='add_whitelist', description='Owner only!')
-async def add_whitelist(interaction: discord.Interaction, id: int, manual: bool = False):
+async def add_whitelist(interaction: discord.Interaction, id: str, manual: bool = False):
     try:
         if interaction.user.id == ADMIN_ID:
             i = client.get_guild(SERVER_ID).get_member(id)
@@ -343,7 +343,7 @@ async def add_whitelist(interaction: discord.Interaction, id: int, manual: bool 
 
 
 @tree.command(name='remove_whitelist', description='Owner only!')
-async def remove_whitelist(interaction: discord.Interaction, id: int):
+async def remove_whitelist(interaction: discord.Interaction, id: str):
     try:
         if interaction.user.id == ADMIN_ID:
             with open("storage.json", "r") as j:
