@@ -25,6 +25,7 @@ SERVER_ID = 895359434539302953
 ADMIN_ID = 779481064636809246
 ADMIN_DMS = 948329194050445372
 ROCK = 947983184409272340
+MANUAL_ADD = ["733148326337314936"]
 
 
 FLAG = 4
@@ -40,7 +41,7 @@ client = aclient()
 tree = discord.app_commands.CommandTree(client)
 # get datetime of last restarted
 time_logged = str(datetime.datetime.now())
-other_languages = ['nl', 'fr', 'de', 'he', 'hi', 'ja', 'ko', 'pl', 'pt', 'ru', 'es', 'vi', 'yi', 'zh', 'zh-cn']
+other_languages = ['nl', 'fr', 'de', 'he', 'hi', 'ja', 'ko', 'pl', 'pt', 'ru', 'es', 'vi', 'yi', 'zh', 'zh-cn', 'af']
 
 async def daily_check(force: bool = False):
     with open("storage.json", "r") as j:
@@ -121,16 +122,17 @@ async def on_member_join(member):
     rock_role = client.get_guild(SERVER_ID).get_role(947983184409272340)
     await member.add_roles(rock_role)
 
-    with open("storage.json", "r") as j:
-        data = json.load(j)
+    if str(member.id) not in MANUAL_ADD:
+        with open("storage.json", "r") as j:
+            data = json.load(j)
 
-    choose_msg = await member.send("Would you like\nPG and up channels 🔵\nOr\nPG and under channels 🟢")
-    data["ChoosePG"].append(choose_msg.id)
-    await choose_msg.add_reaction("🔵")
-    await choose_msg.add_reaction("🟢")
+        choose_msg = await member.send("Would you like\nPG and up channels 🔵\nOr\nPG and under channels 🟢")
+        data["ChoosePG"].append(choose_msg.id)
+        await choose_msg.add_reaction("🔵")
+        await choose_msg.add_reaction("🟢")
 
-    with open("storage.json", "w") as j:
-        json.dump(data, j)
+        with open("storage.json", "w") as j:
+            json.dump(data, j)
 
 
 @tree.command(description='Create an event with its own channel and its own members. *Will auto-archive after date')
