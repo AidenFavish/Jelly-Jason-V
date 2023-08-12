@@ -279,6 +279,7 @@ async def translate(interaction: discord.Interaction, text_in_other_language: st
 @tree.command(name='system_summary', description='For debug purposes')
 async def system_summary(interaction: discord.Interaction):
     file = discord.File("storage.json")
+    file2 = discord.File("/home/aiden/Programs/my.log")
 
     # Get the current CPU usage
     cpu_usage = psutil.cpu_percent()
@@ -299,6 +300,7 @@ async def system_summary(interaction: discord.Interaction):
     summary += 'Memory usage: {}%'.format(memory_usage) + "\n"
     summary += 'CPU temperature: {}°C'.format(cpu_temp)
     await interaction.response.send_message(file=file, content=summary)
+    await interaction.response.send_message(file=file2)
 
 
 @tree.command(name='request_command', description='Owner only!')
