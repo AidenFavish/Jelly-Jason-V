@@ -329,7 +329,7 @@ async def request_command(interaction: discord.Interaction, command: str):
 async def add_whitelist(interaction: discord.Interaction, id: str, manual: bool = False):
     try:
         if interaction.user.id == ADMIN_ID:
-            i = client.get_user(id)
+            i = client.get_user(int(id))
             with open("storage.json", "r") as j:
                 data = json.load(j)
 
