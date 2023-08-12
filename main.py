@@ -300,7 +300,7 @@ async def system_summary(interaction: discord.Interaction):
     summary += 'Memory usage: {}%'.format(memory_usage) + "\n"
     summary += 'CPU temperature: {}°C'.format(cpu_temp)
     await interaction.response.send_message(file=file, content=summary)
-    await interaction.response.send_message(file=file2)
+    await interaction.channel.send(file=file2)
 
 
 @tree.command(name='request_command', description='Owner only!')
