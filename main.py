@@ -499,7 +499,7 @@ async def on_message(message):
             memColor = discord.Color.dark_gray
             if i.accent_color:
                 memColor = i.accent_color
-            member_info = {"NAME": i.name, "PFP": i.avatar.url, "COLOR": str(memColor.value)}
+            member_info = {"NAME": i.name, "PFP": i.avatar.url, "COLOR": str(memColor)}
             data["Whitelist"][str(i.id)] = member_info
 
         with open("storage.json", "w") as j:
