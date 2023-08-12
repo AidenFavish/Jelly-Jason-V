@@ -336,7 +336,7 @@ async def add_whitelist(interaction: discord.Interaction, id1: str, manual: bool
 
             member_info = {"NAME": "Loading", "PFP": "none",
                            "COLOR": [100, 100, 100], "MANUAL": manual}
-            data["Whitelist"][str(i.id)] = member_info
+            data["Whitelist"][str(id1)] = member_info
 
             with open("storage.json", "w") as j:
                 json.dump(data, j)
