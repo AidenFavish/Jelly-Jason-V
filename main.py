@@ -28,7 +28,7 @@ ROCK = 947983184409272340
 MANUAL_ADD = ["733148326337314936"]
 
 
-FLAG = 5
+FLAG = 6
 
 class aclient(discord.Client):
     def __init__(self):
