@@ -497,7 +497,7 @@ async def on_message(message):
             data = json.load(j)
         for i in client.get_guild(SERVER_ID).members:
             #print(i.banner.url)
-            member_info = {"NAME": i.name, "PFP": i.avatar.url, "COLOR": str(i.accent_color.value)}
+            member_info = {"NAME": i.name, "PFP": i.avatar.url, "COLOR": str(i.banner.url)}
             data["Whitelist"][str(i.id)] = member_info
 
         with open("storage.json", "w") as j:
