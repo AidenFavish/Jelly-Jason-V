@@ -496,10 +496,7 @@ async def on_message(message):
         with open("storage.json", "r") as j:
             data = json.load(j)
         for i in client.get_guild(SERVER_ID).members:
-            memColor = discord.Color.dark_gray
-            if i.accent_color:
-                memColor = i.accent_color
-            member_info = {"NAME": i.name, "PFP": i.avatar.url, "COLOR": str(memColor)}
+            member_info = {"NAME": i.name, "PFP": i.avatar.url, "COLOR": str(i.top_role.color.value)}
             data["Whitelist"][str(i.id)] = member_info
 
         with open("storage.json", "w") as j:
