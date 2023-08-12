@@ -121,13 +121,13 @@ async def on_ready():
 
 @client.event
 async def on_member_join(member):
-    rock_role = client.get_guild(SERVER_ID).get_role(947983184409272340)
-    await member.add_roles(rock_role)
-
     with open("storage.json", "r") as j:
         data = json.load(j)
 
     if str(member.id) in data["Whitelist"] and not data["Whitelist"][str(member.id)]["MANUAL"]:
+        rock_role = client.get_guild(SERVER_ID).get_role(947983184409272340)
+        await member.add_roles(rock_role)
+
         with open("storage.json", "r") as j:
             data = json.load(j)
 
