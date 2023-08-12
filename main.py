@@ -329,12 +329,12 @@ async def request_command(interaction: discord.Interaction, command: str):
 async def add_whitelist(interaction: discord.Interaction, id: str, manual: bool = False):
     try:
         if interaction.user.id == ADMIN_ID:
-            i = client.get_guild(SERVER_ID).get_member(id)
+            i = client.get_user(id)
             with open("storage.json", "r") as j:
                 data = json.load(j)
 
             member_info = {"NAME": i.name, "PFP": i.avatar.url,
-                           "COLOR": [i.top_role.color.r, i.top_role.color.g, i.top_role.color.b], "MANUAL": manual}
+                           "COLOR": [100, 100, 100], "MANUAL": manual}
             data["Whitelist"][str(i.id)] = member_info
 
             with open("storage.json", "w") as j:
