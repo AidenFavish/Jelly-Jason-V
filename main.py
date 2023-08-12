@@ -12,6 +12,7 @@ import backgroundTasks
 import customCommands
 import psutil
 from langdetect import detect
+import sys
 
 
 intents = discord.Intents.default()
@@ -311,18 +312,18 @@ async def request_command(interaction: discord.Interaction, command: str):
         await interaction.response.send_message("You must be the owner to use this command")
 
 
-@tree.command(name='power_off', description='Owner only')
-async def power_off(interaction: discord.Interaction):
+@tree.command(name='quit', description='Owner only')
+async def quit(interaction: discord.Interaction):
     try:
         if interaction.user.id == ADMIN_ID:
-            await interaction.response.send_message('Powering off...')
+            await interaction.response.send_message('Quitting...')
         else:
             await interaction.response.send_message('You need to be the admin to use this command')
     except Exception as e:
-        await client.get_user(ADMIN_ID).send(str(e) + "\nError thrown when trying to power off")
+        await client.get_user(ADMIN_ID).send(str(e) + "\nError thrown when trying to quit")
     await asyncio.sleep(2)
     if interaction.user.id == ADMIN_ID:
-        os.system('poweroff')
+        sys.exit()
 
 
 @tree.command(name='sync', description='Owner only')
