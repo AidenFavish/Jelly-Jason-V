@@ -326,17 +326,17 @@ async def request_command(interaction: discord.Interaction, command: str):
 
 
 @tree.command(name='add_whitelist', description='Owner only!')
-async def add_whitelist(interaction: discord.Interaction, id1: str, manual: bool = False):
+async def add_whitelist(interaction: discord.Interaction, ID: str, manual: bool = False):
     try:
         if interaction.user.id == ADMIN_ID:
-            i = client.get_user(int(id1))
-            print(int(id1))
+            i = client.get_user(int(ID))
+            print(int(ID))
             with open("storage.json", "r") as j:
                 data = json.load(j)
 
             member_info = {"NAME": "Loading", "PFP": "none",
                            "COLOR": [100, 100, 100], "MANUAL": manual}
-            data["Whitelist"][str(id1)] = member_info
+            data["Whitelist"][str(ID)] = member_info
 
             with open("storage.json", "w") as j:
                 json.dump(data, j)
@@ -348,13 +348,13 @@ async def add_whitelist(interaction: discord.Interaction, id1: str, manual: bool
 
 
 @tree.command(name='remove_whitelist', description='Owner only!')
-async def remove_whitelist(interaction: discord.Interaction, id: str):
+async def remove_whitelist(interaction: discord.Interaction, ID: str):
     try:
         if interaction.user.id == ADMIN_ID:
             with open("storage.json", "r") as j:
                 data = json.load(j)
 
-            data["Whitelist"].pop(str(id))
+            data["Whitelist"].pop(str(ID))
 
             with open("storage.json", "w") as j:
                 json.dump(data, j)
