@@ -477,12 +477,16 @@ async def on_raw_reaction_remove(payload):
 
 @client.event
 async def on_message(message):
-    lang: str = detect(str(message.content))
-    if message.author.id != client.user.id and lang in other_languages:
-        translated = await customCommands.translate(message.content)
-        embed = discord.Embed(title=message.author.name + " translated message (" + lang + ")", url=message.jump_url,
-                              description=str(translated), color=message.author.top_role.color)
-        await client.get_channel(channels.TRANSLATOR).send(embed=embed)
-        print(translated)
+    try:
+        lang: str = detect(str(message.content))
+        if message.author.id != client.user.id and lang in other_languages:
+            translated = await customCommands.translate(message.content)
+            embed = discord.Embed(title=message.author.name + " translated message (" + lang + ")",
+                                  url=message.jump_url,
+                                  description=str(translated), color=message.author.top_role.color)
+            await client.get_channel(channels.TRANSLATOR).send(embed=embed)
+            print(translated)
+    except Exception as e:
+        await client.get_channel(channels.TESTING).send("Error thrown with translator: " + str(e))
 
 client.run(tokenD)
