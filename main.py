@@ -14,7 +14,6 @@ import psutil
 from langdetect import detect
 import sys
 
-
 intents = discord.Intents.default()
 intents.members = True
 intents.presences = True
@@ -28,8 +27,8 @@ ADMIN_DMS = 948329194050445372
 ROCK = 947983184409272340
 MANUAL_ADD = ["733148326337314936"]
 
-
 FLAG = 12
+
 
 class aclient(discord.Client):
     def __init__(self):
@@ -44,11 +43,13 @@ tree = discord.app_commands.CommandTree(client)
 time_logged = str(datetime.datetime.now())
 other_languages = ['nl', 'fr', 'de', 'he', 'hi', 'ja', 'ko', 'pl', 'pt', 'ru', 'es', 'vi', 'yi', 'zh', 'zh-cn', 'af']
 
+
 async def daily_check(force: bool = False):
     with open("storage.json", "r") as j:
         data = json.load(j)
     # print(time.time() / 86400 + 0.5, flush=True)  # +0.75 is to offset utc time
-    days_since_epoch = (datetime.datetime.now() - datetime.datetime(day=28, month=7, year=2022, hour=2, minute=32, second=30)).days
+    days_since_epoch = (datetime.datetime.now() - datetime.datetime(day=28, month=7, year=2022, hour=2, minute=32,
+                                                                    second=30)).days
     if data["Date"] != int(days_since_epoch) or force:
         print("Daily check triggered")
         data["Date"] = int(days_since_epoch)
@@ -123,7 +124,10 @@ async def on_member_join(member):
     rock_role = client.get_guild(SERVER_ID).get_role(947983184409272340)
     await member.add_roles(rock_role)
 
-    if str(member.id) not in MANUAL_ADD:
+    with open("storage.json", "r") as j:
+        data = json.load(j)
+
+    if str(member.id) in data["Whitelist"] and not data["Whitelist"][str(member.id)]["MANUAL"]:
         with open("storage.json", "r") as j:
             data = json.load(j)
 
@@ -268,13 +272,16 @@ async def restart(interaction: discord.Interaction):
     except Exception as e:
         await client.get_user(ADMIN_ID).send(str(e) + "\nError thrown when trying to restart")
 
+
 @tree.command(name='translate', description='translate text to english')
 async def translate(interaction: discord.Interaction, text_in_other_language: str):
     translated = await customCommands.translate(text_in_other_language)
-    embed = discord.Embed(title=interaction.user.name + " translated message (" + str(detect(text_in_other_language)) + ")",
-                          description=str(translated), color=interaction.user.top_role.color)
+    embed = discord.Embed(
+        title=interaction.user.name + " translated message (" + str(detect(text_in_other_language)) + ")",
+        description=str(translated), color=interaction.user.top_role.color)
     await interaction.response.send_message(embed=embed)
     print(translated)
+
 
 @tree.command(name='system_summary', description='For debug purposes')
 async def system_summary(interaction: discord.Interaction):
@@ -312,6 +319,45 @@ async def request_command(interaction: discord.Interaction, command: str):
             await interaction.response.send_message("Error thrown: " + str(e))
     else:
         await interaction.response.send_message("You must be the owner to use this command")
+
+
+@tree.command(name='add_whitelist', description='Owner only!')
+async def add_whitelist(interaction: discord.Interaction, id: int, manual: bool = False):
+    try:
+        if interaction.user.id == ADMIN_ID:
+            i = client.get_guild(SERVER_ID).get_member(id)
+            with open("storage.json", "r") as j:
+                data = json.load(j)
+
+            member_info = {"NAME": i.name, "PFP": i.avatar.url,
+                           "COLOR": [i.top_role.color.r, i.top_role.color.g, i.top_role.color.b], "MANUAL": manual}
+            data["Whitelist"][str(i.id)] = member_info
+
+            with open("storage.json", "w") as j:
+                json.dump(data, j)
+            await interaction.response.send_message("Added")
+        else:
+            await interaction.response.send_message("Owner only!")
+    except Exception as e:
+        await client.get_channel(channels.TESTING).send("Error thrown when adding whitelist: " + str(e))
+
+
+@tree.command(name='remove_whitelist', description='Owner only!')
+async def remove_whitelist(interaction: discord.Interaction, id: int):
+    try:
+        if interaction.user.id == ADMIN_ID:
+            with open("storage.json", "r") as j:
+                data = json.load(j)
+
+            data["Whitelist"].pop(str(id))
+
+            with open("storage.json", "w") as j:
+                json.dump(data, j)
+            await interaction.response.send_message("Removed")
+        else:
+            await interaction.response.send_message("Owner only!")
+    except Exception as e:
+        await client.get_channel(channels.TESTING).send("Error thrown when removing whitelist: " + str(e))
 
 
 @tree.command(name='quit', description='Owner only')
@@ -406,9 +452,9 @@ async def on_raw_reaction_add(payload):
                 else:
                     del data["PG"][i]
                     bad_msg = await client.get_channel(payload.channel_id).fetch_message(payload.message_id)
-                    await client.get_channel(channels.CENSORED_LOG).send(bad_msg.author.name + ' said "' + bad_msg.content + '"')
+                    await client.get_channel(channels.CENSORED_LOG).send(
+                        bad_msg.author.name + ' said "' + bad_msg.content + '"')
                     await bad_msg.delete()
-
 
                 with open("storage.json", "w") as j:
                     json.dump(data, j)
@@ -496,7 +542,8 @@ async def on_message(message):
         with open("storage.json", "r") as j:
             data = json.load(j)
         for i in client.get_guild(SERVER_ID).members:
-            member_info = {"NAME": i.name, "PFP": i.avatar.url, "COLOR": str(i.top_role.color.value)}
+            member_info = {"NAME": i.name, "PFP": i.avatar.url,
+                           "COLOR": [i.top_role.color.r, i.top_role.color.g, i.top_role.color.b], "MANUAL": False}
             data["Whitelist"][str(i.id)] = member_info
 
         with open("storage.json", "w") as j:
