@@ -131,7 +131,7 @@ async def on_member_join(member):
         with open("storage.json", "r") as j:
             data = json.load(j)
 
-        choose_msg = await member.send("Would you like\nPG and up channels 🔵\nOr\nPG and under channels 🟢")
+        choose_msg = await member.send("Welcome to The Unkillable Server!\nYou are on the whitelist so you can jump right in!\nWould you like\nPG and up channels 🔵\nOr\nPG and under channels 🟢")
         data["ChoosePG"].append(choose_msg.id)
         await choose_msg.add_reaction("🔵")
         await choose_msg.add_reaction("🟢")
@@ -139,6 +139,10 @@ async def on_member_join(member):
         with open("storage.json", "w") as j:
             json.dump(data, j)
 
+    elif str(member.id) in data["Whitelist"] and data["Whitelist"][str(member.id)]["MANUAL"]:
+        rock_role = client.get_guild(SERVER_ID).get_role(947983184409272340)
+        await member.add_roles(rock_role)
+        await member.send("Welcome to The Unkillable Server\nYou are on the whitelisted and listed as manual role entry\nYou can enjoy some of our Rock channels while we update your roles!")
 
 @tree.command(description='Create an event with its own channel and its own members. *Will auto-archive after date')
 async def event(interaction: discord.Interaction, event_name: str, day: int, month: int, year: int, location: str,
