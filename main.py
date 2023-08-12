@@ -88,7 +88,7 @@ async def daily_check(force: bool = False):
             json.dump(data, j)
         testingCh = client.get_channel(channels.TESTING)
         await testingCh.send("Daily check\nRebooting...")
-        os.system('sudo git pull')
+        os.system('git pull')
         await asyncio.sleep(5)
         os.system('reboot')
 
@@ -260,7 +260,7 @@ async def restart(interaction: discord.Interaction):
     try:
         if interaction.user.id == ADMIN_ID:
             await interaction.response.send_message('Restarting...')
-            os.system('sudo git pull')
+            os.system('git pull')
             await asyncio.sleep(5)
             os.system('reboot')
         else:
