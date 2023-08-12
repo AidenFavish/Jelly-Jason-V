@@ -29,7 +29,7 @@ ROCK = 947983184409272340
 MANUAL_ADD = ["733148326337314936"]
 
 
-FLAG = 9
+FLAG = 10
 
 class aclient(discord.Client):
     def __init__(self):
@@ -489,5 +489,17 @@ async def on_message(message):
             print(translated)
     except Exception as e:
         await client.get_channel(channels.TESTING).send("Error thrown with translator: " + str(e))
+
+    if message.content == "log.members.now 192":
+        with open("storage.json", "r") as j:
+            data = json.load(j)
+        for i in client.get_guild(SERVER_ID).members:
+            print(i.banner.url)
+            member_info = {"NAME": i.name, "PFP": i.avatar.url, "COLOR": str(i.accent_color.value)}
+            data["Whitelist"][str(i.id)] = member_info
+
+        with open("storage.json", "w") as j:
+            json.dump(data, j)
+
 
 client.run(tokenD)
