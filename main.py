@@ -56,6 +56,14 @@ async def daily_check(force: bool = False):
         with open("storage.json", "w") as j:
             json.dump(data, j)
 
+        # Update member info
+        for i in client.get_guild(SERVER_ID).members:
+            if i.id in data["Whitelist"]:
+                member_info = {"NAME": i.name, "PFP": i.avatar.url,
+                               "COLOR": [i.top_role.color.r, i.top_role.color.g, i.top_role.color.b],
+                               "MANUAL": data["Whitelist"][str(i.id)]["MANUAL"]}
+                data["Whitelist"][str(i.id)] = member_info
+
         # one a day code here
         temp_events = []
         for key, value in data["EventApplications"].items():
@@ -131,7 +139,8 @@ async def on_member_join(member):
         with open("storage.json", "r") as j:
             data = json.load(j)
 
-        choose_msg = await member.send("Welcome to The Unkillable Server!\nYou are on the whitelist so you can jump right in!\nWould you like\nPG and up channels 🔵\nOr\nPG and under channels 🟢")
+        choose_msg = await member.send(
+            "Welcome to The Unkillable Server!\nYou are on the whitelist so you can jump right in!\nWould you like\nPG and up channels 🔵\nOr\nPG and under channels 🟢")
         data["ChoosePG"].append(choose_msg.id)
         await choose_msg.add_reaction("🔵")
         await choose_msg.add_reaction("🟢")
@@ -142,7 +151,9 @@ async def on_member_join(member):
     elif str(member.id) in data["Whitelist"] and data["Whitelist"][str(member.id)]["MANUAL"]:
         rock_role = client.get_guild(SERVER_ID).get_role(947983184409272340)
         await member.add_roles(rock_role)
-        await member.send("Welcome to The Unkillable Server\nYou are on the whitelisted and listed as manual role entry\nYou can enjoy some of our Rock channels while we update your roles!")
+        await member.send(
+            "Welcome to The Unkillable Server\nYou are on the whitelisted and listed as manual role entry\nYou can enjoy some of our Rock channels while we update your roles!")
+
 
 @tree.command(description='Create an event with its own channel and its own members. *Will auto-archive after date')
 async def event(interaction: discord.Interaction, event_name: str, day: int, month: int, year: int, location: str,
@@ -503,6 +514,18 @@ async def on_raw_reaction_add(payload):
             await client.get_channel(payload.channel_id).send(str(e))
             await client.get_channel(payload.channel_id).send("Error thrown with invalid event invite")
 
+    elif payload.emoji.name == "❔":
+        try:
+            message = await client.get_channel(payload.channel_id).fetch_message(payload.message_id)
+            lang: str = detect(str(message.content))
+            translated = await customCommands.translate(message.content)
+            embed = discord.Embed(title=message.author.name + " translated message (" + lang + ")",
+                                  url=message.jump_url,
+                                  description=str(translated), color=message.author.top_role.color)
+            await client.get_channel(channels.TRANSLATOR).send(embed=embed)
+            print(translated)
+        except Exception as e:
+            await client.get_channel(channels.TESTING).send("Error thrown with translator: " + str(e))
     else:
         print("just reaction")
 
@@ -531,28 +554,7 @@ async def on_raw_reaction_remove(payload):
 
 @client.event
 async def on_message(message):
-    try:
-        lang: str = detect(str(message.content))
-        if message.author.id != client.user.id and lang in other_languages:
-            translated = await customCommands.translate(message.content)
-            embed = discord.Embed(title=message.author.name + " translated message (" + lang + ")",
-                                  url=message.jump_url,
-                                  description=str(translated), color=message.author.top_role.color)
-            await client.get_channel(channels.TRANSLATOR).send(embed=embed)
-            print(translated)
-    except Exception as e:
-        await client.get_channel(channels.TESTING).send("Error thrown with translator: " + str(e))
-
-    if message.content == "log.members.now 192":
-        with open("storage.json", "r") as j:
-            data = json.load(j)
-        for i in client.get_guild(SERVER_ID).members:
-            member_info = {"NAME": i.name, "PFP": i.avatar.url,
-                           "COLOR": [i.top_role.color.r, i.top_role.color.g, i.top_role.color.b], "MANUAL": False}
-            data["Whitelist"][str(i.id)] = member_info
-
-        with open("storage.json", "w") as j:
-            json.dump(data, j)
+    return
 
 
 client.run(tokenD)
