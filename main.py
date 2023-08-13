@@ -58,7 +58,7 @@ async def daily_check(force: bool = False):
 
         # Update member info
         for i in client.get_guild(SERVER_ID).members:
-            if i.id in data["Whitelist"]:
+            if str(i.id) in data["Whitelist"]:
                 member_info = {"NAME": i.name, "PFP": i.avatar.url,
                                "COLOR": [i.top_role.color.r, i.top_role.color.g, i.top_role.color.b],
                                "MANUAL": data["Whitelist"][str(i.id)]["MANUAL"]}
