@@ -422,12 +422,12 @@ async def on_raw_reaction_add(payload):
                                           len("Application waiting for approval:\n\n"):]
             output += "\nplease react 👍 to gain access to the event channel!"
             generalCh = client.get_channel(channels.GENERAL)
-            generalPgCh = client.get_channel(channels.GENERAL_PG)
+            #generalPgCh = client.get_channel(channels.GENERAL_PG)
             invite1 = await generalCh.send("🟢\n" + output)
-            invite2 = await generalPgCh.send("🔵\n" + output)
+            #invite2 = await generalPgCh.send("🔵\n" + output)
 
             await invite1.add_reaction("👍")
-            await invite2.add_reaction("👍")
+            #await invite2.add_reaction("👍")
 
             event_data = data["EventApplications"][str(payload.message_id)]
 
@@ -446,7 +446,7 @@ async def on_raw_reaction_add(payload):
                 await client.get_user(ADMIN_ID).send(str(e) + "\nError with creating channel")
 
             data["EventInvites"][str(invite1.id)] = str(payload.message_id)
-            data["EventInvites"][str(invite2.id)] = str(payload.message_id)
+            #data["EventInvites"][str(invite2.id)] = str(payload.message_id)
             data["EventApplications"][str(payload.message_id)].append(role_id.id)
             data["EventApplications"][str(payload.message_id)].append(event_channel.id)
             with open("storage.json", "w") as j:

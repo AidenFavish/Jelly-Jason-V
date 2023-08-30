@@ -1,1 +1,295 @@
-{"Status": " The Unkillable Server", "EventApplications": {"1138932782270255274": ["S.A discussions", 18, 8, 2023, "school", "discussions for making a group", "None", 459905208160616459, 1138932843565830194, 1138932844513726515]}, "PG": [], "ChoosePG": [], "EventInvites": {"1138932837148536842": "1138932782270255274", "1138932838641696869": "1138932782270255274"}, "Date": 380, "Whitelist":  {}}
+{
+  "Status": " The Unkillable Server",
+  "EventApplications": {
+    "1138932782270255274": [
+      "S.A discussions",
+      18,
+      8,
+      2023,
+      "school",
+      "discussions for making a group",
+      "None",
+      459905208160616459,
+      1138932843565830194,
+      1138932844513726515
+    ]
+  },
+  "PG": [
+    [
+      1140074654904619029,
+      2
+    ],
+    [
+      1141187026532696124,
+      1
+    ]
+  ],
+  "ChoosePG": [],
+  "EventInvites": {
+    "1138932837148536842": "1138932782270255274",
+    "1138932838641696869": "1138932782270255274"
+  },
+  "Date": 381,
+  "Whitelist": {
+    "153909378888630272": {
+      "NAME": "jordansonatina",
+      "PFP": "https://cdn.discordapp.com/avatars/153909378888630272/786999b25c9d0997522f39b68de7944d.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "252162226662801408": {
+      "NAME": "gzdoor",
+      "PFP": "https://cdn.discordapp.com/avatars/252162226662801408/043e7aa07cf866c330af89d642ae39f2.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "283722905148194816": {
+      "NAME": "dripin",
+      "PFP": "https://cdn.discordapp.com/avatars/283722905148194816/5cd0dc10dc696cb76d47e7a2587d0ac4.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "306981711902801927": {
+      "NAME": "aisururu",
+      "PFP": "https://cdn.discordapp.com/avatars/306981711902801927/9f4f353804f03584e56c7001cd644a2d.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "315291298993274880": {
+      "NAME": "DoubleHappiness\u56cd",
+      "PFP": "https://cdn.discordapp.com/avatars/315291298993274880/d20f27eb7c1ed56c0f3de6b18b834cc4.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "346444682039132170": {
+      "NAME": "idek_man",
+      "PFP": "https://cdn.discordapp.com/avatars/346444682039132170/fd6e4c27af7e042311b7da7741f1661f.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "412026084628889620": {
+      "NAME": "gzluc",
+      "PFP": "https://cdn.discordapp.com/avatars/412026084628889620/14d1c94f7707f6b68e0f9a526eef84da.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "459905208160616459": {
+      "NAME": "Tanker",
+      "PFP": "https://cdn.discordapp.com/avatars/459905208160616459/a23813a3c41450ef7c408f44634dd44d.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "528420418638577697": {
+      "NAME": "blinkingatthesun",
+      "PFP": "https://cdn.discordapp.com/avatars/528420418638577697/a1dd5bff33f1c401bdf4d07c12a4ae93.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "529900734930616321": {
+      "NAME": "Daddy please chill",
+      "PFP": "https://cdn.discordapp.com/avatars/529900734930616321/444e6d1d6b4b68b6d0646c4f54304115.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "577252279019765783": {
+      "NAME": "simple1111",
+      "PFP": "https://cdn.discordapp.com/avatars/577252279019765783/5e6897166c8141619c21aaa91b0c1300.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "601101559807606814": {
+      "NAME": "ozzyosborne",
+      "PFP": "https://cdn.discordapp.com/avatars/601101559807606814/67173cee89a88f2bed585862609944de.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "605588940057214976": {
+      "NAME": "cybertaco2",
+      "PFP": "https://cdn.discordapp.com/avatars/605588940057214976/1460622589de9321a8f4ae461bf7bed5.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "628441655120494607": {
+      "NAME": "GW",
+      "PFP": "https://cdn.discordapp.com/avatars/628441655120494607/1d337832b64f666e765d4602f19fa37e.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "745185831790313563": {
+      "NAME": "bigjohnsonfemale",
+      "PFP": "https://cdn.discordapp.com/avatars/745185831790313563/49e69f5c4ff879b0a4831e95b4689116.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "763809450674880543": {
+      "NAME": "nino111",
+      "PFP": "https://cdn.discordapp.com/avatars/763809450674880543/ad22fae91db4cdafabe39cafe78a4449.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "764984895998918666": {
+      "NAME": "squill123",
+      "PFP": "https://cdn.discordapp.com/avatars/764984895998918666/7693844a475506fd53866c6883a8b8c6.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "778343804993536042": {
+      "NAME": "kw_06",
+      "PFP": "https://cdn.discordapp.com/avatars/778343804993536042/efa4b4d05926532bb70ec88fc406a722.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "779481064636809246": {
+      "NAME": "fatfish1",
+      "PFP": "https://cdn.discordapp.com/avatars/779481064636809246/8f7fa3db9bdf8b211b20e8df68b20ec2.png?size=1024",
+      "COLOR": [
+        155,
+        89,
+        182
+      ],
+      "MANUAL": false
+    },
+    "918344772417126411": {
+      "NAME": "guppy.ong",
+      "PFP": "https://cdn.discordapp.com/avatars/918344772417126411/c829c14279fb22a188e389276fe3c096.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "927759857333989396": {
+      "NAME": "kingjay6021",
+      "PFP": "https://cdn.discordapp.com/avatars/927759857333989396/6af0a842ce04ab04e318c1e0b7a1c3de.png?size=1024",
+      "COLOR": [
+        155,
+        89,
+        182
+      ],
+      "MANUAL": false
+    },
+    "948011202678771713": {
+      "NAME": "Jelly Jason V",
+      "PFP": "https://cdn.discordapp.com/avatars/948011202678771713/fdf3265815f9e2ced8f3000b3413f357.png?size=1024",
+      "COLOR": [
+        52,
+        152,
+        219
+      ],
+      "MANUAL": false
+    },
+    "951702664532623471": {
+      "NAME": "Tanker",
+      "PFP": "https://cdn.discordapp.com/avatars/951702664532623471/801b67d7c14b90dd13365888b50da5bc.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": false
+    },
+    "1089259451002916935": {
+      "NAME": "The Msg Keeper",
+      "PFP": "https://cdn.discordapp.com/avatars/1089259451002916935/7f05d7d3b7f23156b19d561052c10eb9.png?size=1024",
+      "COLOR": [
+        33,
+        240,
+        0
+      ],
+      "MANUAL": false
+    },
+    "424413952559153162": {
+      "NAME": "Loading",
+      "PFP": "none",
+      "COLOR": [
+        100,
+        100,
+        100
+      ],
+      "MANUAL": true
+    },
+    "733148326337314936": {
+      "NAME": "i_dont_like_my_new_username",
+      "PFP": "https://cdn.discordapp.com/avatars/733148326337314936/77617feed0b31dcdd4c59f832df9f74f.png?size=1024",
+      "COLOR": [
+        26,
+        188,
+        156
+      ],
+      "MANUAL": true
+    }
+  }
+}
